@@ -55,8 +55,9 @@ while True:
     is_check = input('Check for duplicates?')
     if is_check == 'yes' or is_check == 'no':
         break
+dubl_files = []
 if is_check == 'yes':
-    i = 1
+    number_of_dubl_files = 1
     prev_value = 0
     for key, value in sorted_dict2.items():
         if len(value) > 1:
@@ -65,5 +66,31 @@ if is_check == 'yes':
                 prev_value = key[0]
             print('Hash:', key[1])
             for file in value:
-                print(str(i) + '.', file)
-                i += 1
+                print(str(number_of_dubl_files) + '.', file)
+                dubl_files.append({'file': file, 'file_number': number_of_dubl_files, 'file_size': key[0]})
+                number_of_dubl_files += 1
+while True:
+    is_delete = input('Delete files?')
+    if is_delete == 'yes' or is_delete == 'no':
+        break
+if is_delete == 'yes':
+    while True:
+        try:
+            list_to_delete = list(str(input('Enter file numbers to delete:')).replace(' ', ''))
+            if len(list_to_delete) > 0:
+                if any([int(file_num) > number_of_dubl_files for file_num in list_to_delete]):
+                    print('Wrong format')
+                else:
+                    break
+            else:
+                print('Wrong format')
+        except:
+            print('Wrong format')
+    feed_up_space = 0
+    if len(list_to_delete) > 0:
+        for file in dubl_files:
+            if file['file_number'] in list(map(int, list_to_delete)):
+                os.remove(file['file'])
+                feed_up_space += file['file_size']
+        print('Total freed up space: {0} bytes'.format(feed_up_space))
+
